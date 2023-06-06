@@ -10,7 +10,7 @@ import torch
 from torch.utils.data import Dataset
 import zipfile
 import tarfile
-from sh import gunzip
+# from sh import gunzip
 from glob import glob
 import pickle
 import geopandas as gpd
@@ -18,7 +18,7 @@ import numpy as np
 import rasterio as rio
 from rasterio import features
 from tqdm import tqdm
-
+import sentinelhub
 
 class S2Reader(Dataset):
     """
