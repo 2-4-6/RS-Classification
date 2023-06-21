@@ -20,7 +20,7 @@ class SpatiotemporalModel(nn.Module):
     A wrapper around torchvision (spatial) and breizhcrops models (temporal)
     """
     def __init__(self, spatial_backbone="mobilenet_v3_small", temporal_backbone="LSTM", input_dim=4,
-                 num_classes=9, sequencelength=365, pretrained_spatial=True, device="cpu"):
+                 num_classes=9, sequencelength=365, pretrained_spatial=True, device="cuda"):
         super(SpatiotemporalModel, self).__init__()
 
 
