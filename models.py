@@ -26,6 +26,7 @@ class SpatialEncoder(torch.nn.Module):
         super(SpatialEncoder, self).__init__()
         self.model = nn.Sequential(
             nn.Conv2d(input_dim, 16, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False),
+            nn.ReLU(inplace=True),
             nn.AdaptiveAvgPool2d((1,1))
         )
         self.output_dim = self.model[0].out_channels
