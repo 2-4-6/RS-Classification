@@ -3,7 +3,7 @@ import torch
 from torch import nn
 
 class SpatiotemporalModel(nn.Module):
-    def __init__(self, input_dim=4, num_classes=9, sequencelength=365, pretrained_spatial=True, device="cuda"):
+    def __init__(self, input_dim=4, num_classes=9, device="cuda"):
         super(SpatiotemporalModel, self).__init__()
 
         self.spatial_encoder = SpatialEncoder(input_dim=input_dim)
