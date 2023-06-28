@@ -33,7 +33,9 @@ class SpatialEncoder(torch.nn.Module):
 
     def forward(self, x):
         N, T, D, H, W = x.shape
+        print(x.shape)
         x = self.model(x.view(N * T, D, H, W))
+        print(x.shape)
         return x.view(N, T, x.shape[1])
 
 class TemporalEncoder(nn.Module):
