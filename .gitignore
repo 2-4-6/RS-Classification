@@ -1,5 +1,4 @@
 data/
-utils/__pycache__
+utils/__pycache__/
 temp_s2/
-__pycache__
-utils/__pycache__
+__pycache__/
