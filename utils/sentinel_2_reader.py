@@ -84,7 +84,7 @@ class S2Reader(Dataset):
             label = feature.crop_id
         
         #Use selected bands
-        image_stack = image_stack[:, [2, 6], :, :]
+        # image_stack = image_stack[:, [2, 6], :, :]
 
         return image_stack, label, mask, feature.fid
 
