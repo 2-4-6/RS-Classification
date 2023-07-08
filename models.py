@@ -12,7 +12,7 @@ class SpatiotemporalModel(nn.Module):
 
         self.temporal_encoder = TemporalEncoder(input_dim=output_dim, num_classes=num_classes)
 
-        self.modelname = f"Conv3d_LSTM_{input_dim}222"
+        self.modelname = f"Conv2d_LSTM_{input_dim}"
 
         self.to(device)
         print("INFO: model initialized with name:{}".format(self.modelname))
@@ -29,6 +29,7 @@ class SpatialEncoder(torch.nn.Module):
             nn.Conv2d(input_dim, 96, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False),
             nn.ReLU(inplace=True),
             nn.AdaptiveAvgPool2d((1, 1))
+
 
         )
         self.output_dim = self.model[0].out_channels
@@ -52,7 +53,7 @@ class CNNLSTM(torch.nn.Module):
     def __init__(self, input_dim=4, num_classes=9, device="cuda"):
         super(CNNLSTM, self).__init__()
 
-        self.modelname = f"Conv3d_LSTM_{input_dim}22222222"
+        self.modelname = f"Conv3d_LSTM_{input_dim}_asdfa"
 
         self.to(device)
         print("INFO: model initialized with name:{}".format(self.modelname))
@@ -70,8 +71,6 @@ class CNNLSTM(torch.nn.Module):
         # Replace input dimensions with dimensions of X
         self.lstm = nn.LSTM(1024, num_classes, batch_first=True)
 
-        # Fully connected layer
-        self.fc = nn.Linear(64, num_classes)
         self.to(device)
 
     def forward(self, x):
