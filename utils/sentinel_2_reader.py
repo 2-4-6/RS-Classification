@@ -82,9 +82,17 @@ class S2Reader(Dataset):
             label = self.crop_ids.index(feature.crop_id)
         else:
             label = feature.crop_id
+
+        # Creating NDVI values
+        # red = image_stack[:, 3, :, :]
+        # nir = image_stack[:, 7, :, :]
+        # ndvi = (nir - red) / (nir + red)
+
+        # ndvi = np.repeat(ndvi[np.newaxis, :, :, :], image_stack.shape[0], axis=0) 
+        # image_stack = np.concatenate([image_stack, ndvi], axis=1)
         
         #Use selected bands
-        image_stack = image_stack[:, [1, 3, 7, 10, 11], :, :]
+        image_stack = image_stack[:, [1, 2, 3, 4, 5, 6, 7, 8, 10, 11], :, :]
 
         return image_stack, label, mask, feature.fid
 

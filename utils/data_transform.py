@@ -58,8 +58,9 @@ class EOTransformer():
             if np.random.rand() < 0.5:
                 image_stack = np.fliplr(image_stack)
                 mask = np.fliplr(mask)
-
+                
         image_stack = image_stack * 1e-4
+        
 
         # z-normalize
         if self.normalize:
