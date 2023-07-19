@@ -64,6 +64,7 @@ class S2Reader(Dataset):
             try:
                 object = np.load(npyfile)
                 image_stack = object["image_stack"]
+                cloud_stack = object["cloud_stack"]
                 mask = object["mask"]
             except zipfile.BadZipFile:
                 print("ERROR: {} is a bad zipfile...".format(npyfile))
@@ -92,9 +93,9 @@ class S2Reader(Dataset):
         # image_stack = np.concatenate([image_stack, ndvi], axis=1)
         
         #Use selected bands
-        image_stack = image_stack[:, [1, 2, 3, 4, 5, 6, 7, 8, 10, 11], :, :]
+        # image_stack = image_stack[:, [1, 2, 3, 4, 5, 6, 7, 8, 10, 11], :, :]
 
-        return image_stack, label, mask, feature.fid
+        return image_stack, label, mask, feature.fid, cloud_stack  
 
     @staticmethod
     def _setup(rootpath, labelgeojson, npyfolder, min_area_to_ignore=1000,include_cloud=False):
