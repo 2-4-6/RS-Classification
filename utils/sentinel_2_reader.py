@@ -39,6 +39,7 @@ class S2Reader(Dataset):
         self.data_transform = transform
         self.selected_time_points=selected_time_points
         self.crop_ids = label_ids
+        self.include_cloud = include_cloud
         if label_ids is not None and not isinstance(label_ids, list):
             self.crop_ids = label_ids.tolist()
 
@@ -95,7 +96,10 @@ class S2Reader(Dataset):
         #Use selected bands
         # image_stack = image_stack[:, [1, 2, 3, 4, 5, 6, 7, 8, 10, 11], :, :]
 
-        return image_stack, label, mask, feature.fid, cloud_stack  
+        if self.include_cloud:
+            return image_stack, label, mask, feature.fid, cloud_stack
+        else:
+            return image_stack, label, mask, feature.fid
 
     @staticmethod
     def _setup(rootpath, labelgeojson, npyfolder, min_area_to_ignore=1000,include_cloud=False):
