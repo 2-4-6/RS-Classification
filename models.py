@@ -120,6 +120,8 @@ class Conv3D_x3_LSTM(torch.nn.Module):
         # Replace input dimensions with dimensions of X
         self.lstm = nn.LSTM(64, num_classes, batch_first=True)
 
+        self.fc = nn.Linear(num_classes, num_classes)
+
         self.to(device)
 
     def forward(self, x):
@@ -132,10 +134,13 @@ class Conv3D_x3_LSTM(torch.nn.Module):
 
         # Reshape CNN output for LSTM
         x = x.view(N, T, -1)
+        # print(x.shape)
 
         x, _ = self.lstm(x)
 
         # Get the output of the last time step
         x = x[:, -1, :]
+
+        x = self.fc(x)
 
         return x
