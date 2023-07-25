@@ -46,9 +46,9 @@ class Conv2D_x1_LSTM(torch.nn.Module):
 
 # Conv3d attempt
 
-class Conv3D_x2_LSTM(torch.nn.Module):
+class Conv3D_x1_LSTM(torch.nn.Module):
     def __init__(self, input_dim=4, num_classes=9, device="cuda", test=False):
-        super(Conv3D_x2_LSTM, self).__init__()
+        super(Conv3D_x1_LSTM, self).__init__()
 
         if test:
             random_number = random.random()
@@ -60,16 +60,15 @@ class Conv3D_x2_LSTM(torch.nn.Module):
 
         # CNN layers
         self.cnn = nn.Sequential(
-            nn.Conv3d(input_dim, 32, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.MaxPool3d(kernel_size=2, stride=2),
-            nn.Conv3d(32, 64, kernel_size=3, padding=1),
+            nn.Conv3d(input_dim, 16, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
             nn.MaxPool3d(kernel_size=2, stride=2)
         )
 
         # Replace input dimensions with dimensions of X
-        self.lstm = nn.LSTM(1024, num_classes, batch_first=True)
+        self.lstm = nn.LSTM(2048, num_classes, batch_first=True)
+
+        self.fc = nn.Linear(num_classes, num_classes)
 
         self.to(device)
 
@@ -87,6 +86,8 @@ class Conv3D_x2_LSTM(torch.nn.Module):
 
         # Get the output of the last time step
         x = x[:, -1, :]
+
+        x = self.fc(x)
 
         return x
 
