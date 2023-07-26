@@ -47,7 +47,7 @@ class Conv2D_x1_LSTM(torch.nn.Module):
 # Conv3d attempt
 
 class Conv3D_x1_LSTM(torch.nn.Module):
-    def __init__(self, input_dim=4, num_classes=9, device="cuda", test=False):
+    def __init__(self, input_dim=4, num_classes=9, device="cuda", test=False, dropout_rate=0.9):
         super(Conv3D_x1_LSTM, self).__init__()
 
         if test:
@@ -62,11 +62,14 @@ class Conv3D_x1_LSTM(torch.nn.Module):
         self.cnn = nn.Sequential(
             nn.Conv3d(input_dim, 16, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
+            nn.Dropout(dropout_rate),  # Dropout after ReLU
             nn.MaxPool3d(kernel_size=2, stride=2)
         )
 
         # Replace input dimensions with dimensions of X
         self.lstm = nn.LSTM(2048, num_classes, batch_first=True)
+
+        self.dropout = nn.Dropout(dropout_rate)  # Dropout before fully connected layer
 
         self.fc = nn.Linear(num_classes, num_classes)
 
@@ -83,6 +86,8 @@ class Conv3D_x1_LSTM(torch.nn.Module):
         x = x.view(N, T, -1)
 
         x, _ = self.lstm(x)
+
+        x = self.dropout(x)  # Apply dropout
 
         # Get the output of the last time step
         x = x[:, -1, :]
