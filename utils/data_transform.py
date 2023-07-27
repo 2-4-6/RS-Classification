@@ -84,7 +84,7 @@ class Sentinel1Transform(EOTransformer):
 class Sentinel2Transform(EOTransformer):
     """
     THIS CLASS INHERITS EOTRANSFORMER FOR DATA AUGMENTATION IN THE SENTINEL-2 DATA
-    """
+    """  
     pass #TODO: some advanced approach special to Planet Data might be implemented
 
 def random_crop(image_stack, mask, image_size):

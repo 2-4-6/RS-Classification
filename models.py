@@ -2,6 +2,8 @@ from torchvision import models
 import torch
 from torch import nn
 import random
+from datetime import datetime
+import time
 
 #Conv2d attempt
 class Conv2D_x1_LSTM(torch.nn.Module):
@@ -43,31 +45,28 @@ class Conv2D_x1_LSTM(torch.nn.Module):
         return x
 
 class Conv3D_x1_LSTM(torch.nn.Module):
-    def __init__(self, input_dim=4, num_classes=9, device="cuda", test=False, dropout_rate=0.7):
+    def __init__(self, input_dim=4, num_classes=9, device="cuda", dropout_rate=0.5, model_name=None):
         super(Conv3D_x1_LSTM, self).__init__()
 
-        if test:
-            random_number = random.random()
+        if model_name == None:
+            model_name = time.strftime("%Y%m%d-%H%M%S")
 
-        self.modelname = f"Conv3d_LSTM_{input_dim}_bands_de_cloud_test_{random_number}"
+        self.modelname = f"Conv3d_LSTM_{input_dim}_{model_name}"
 
         self.to(device)
         print("INFO: model initialized with name:{}".format(self.modelname))
 
         # CNN layers
         self.cnn = nn.Sequential(
-            nn.Conv3d(input_dim, 16, kernel_size=3, padding=1),
+            nn.Conv3d(input_dim, 20, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
             nn.Dropout(dropout_rate),
             nn.MaxPool3d(kernel_size=2, stride=2)
         )
 
-
-        self.lstm = nn.LSTM(2048, num_classes, batch_first=True)
-
         self.dropout = nn.Dropout(dropout_rate)
 
-        self.fc = nn.Linear(num_classes, num_classes)
+        self.fc = nn.Linear(18, num_classes)
 
         self.to(device)
 
@@ -82,6 +81,58 @@ class Conv3D_x1_LSTM(torch.nn.Module):
         x = x.view(N, T, -1)
         x = self.dropout(x)
 
+        self.lstm = nn.LSTM(x.shape[2], 18, batch_first=True).to(x.device)
+        x, _ = self.lstm(x)
+
+        #output of the last time step
+        x = x[:, -1, :]
+
+        x = self.fc(x)
+
+        return x
+
+class Conv3D_x2_LSTM(torch.nn.Module):
+    def __init__(self, input_dim=4, num_classes=9, device="cuda", dropout_rate=0.5, model_name=None):
+        super(Conv3D_x2_LSTM, self).__init__()
+
+        if model_name == None:
+            model_name = datetime.now()
+
+        self.modelname = f"Conv3d_X2_LSTM_{input_dim}_{model_name}"
+
+        self.to(device)
+        print("INFO: model initialized with name:{}".format(self.modelname))
+
+        # CNN layers
+        self.cnn = nn.Sequential(
+            nn.Conv3d(input_dim, 16, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout_rate),
+            nn.MaxPool3d(kernel_size=2, stride=2),
+            nn.Conv3d(input_dim, 16, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout_rate),
+            nn.MaxPool3d(kernel_size=2, stride=2)
+        )
+
+        self.dropout = nn.Dropout(dropout_rate)
+
+        self.fc = nn.Linear(18, num_classes)
+
+        self.to(device)
+
+    def forward(self, x):
+        N, T, D, H, W = x.shape
+        # input for CNN
+        x = x.view(N, D, T, H, W)
+
+        x = self.cnn(x)
+
+        # Reshape CNN output for LSTM
+        x = x.view(N, T, -1)
+        x = self.dropout(x)
+
+        self.lstm = nn.LSTM(x.shape[2], 18, batch_first=True).to(x.device)
         x, _ = self.lstm(x)
 
         #output of the last time step
