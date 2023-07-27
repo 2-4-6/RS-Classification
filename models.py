@@ -16,7 +16,6 @@ class Conv2D_x1_LSTM(torch.nn.Module):
         self.to(device)
         print("INFO: model initialized with name:{}".format(self.modelname))
 
-        #CNN layers
         self.cnn = nn.Sequential(
             nn.Conv2d(input_dim, 96, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False),
             nn.ReLU(inplace=True),
@@ -38,16 +37,13 @@ class Conv2D_x1_LSTM(torch.nn.Module):
         x = x.view(N, T, -1)
         # print(x.shape)
         x, _ = self.lstm(x)
-        # Get the output of the last time step
+
         x = x[:, -1, :]
 
         return x
 
-
-# Conv3d attempt
-
 class Conv3D_x1_LSTM(torch.nn.Module):
-    def __init__(self, input_dim=4, num_classes=9, device="cuda", test=False, dropout_rate=0.9):
+    def __init__(self, input_dim=4, num_classes=9, device="cuda", test=False, dropout_rate=0.7):
         super(Conv3D_x1_LSTM, self).__init__()
 
         if test:
@@ -62,14 +58,14 @@ class Conv3D_x1_LSTM(torch.nn.Module):
         self.cnn = nn.Sequential(
             nn.Conv3d(input_dim, 16, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
-            nn.Dropout(dropout_rate),  # Dropout after ReLU
+            nn.Dropout(dropout_rate),
             nn.MaxPool3d(kernel_size=2, stride=2)
         )
 
-        # Replace input dimensions with dimensions of X
+
         self.lstm = nn.LSTM(2048, num_classes, batch_first=True)
 
-        self.dropout = nn.Dropout(dropout_rate)  # Dropout before fully connected layer
+        self.dropout = nn.Dropout(dropout_rate)
 
         self.fc = nn.Linear(num_classes, num_classes)
 
@@ -77,19 +73,18 @@ class Conv3D_x1_LSTM(torch.nn.Module):
 
     def forward(self, x):
         N, T, D, H, W = x.shape
-        # Reshape input for CNN
+        # input for CNN
         x = x.view(N, D, T, H, W)
-        # Apply CNN layers
+
         x = self.cnn(x)
 
         # Reshape CNN output for LSTM
         x = x.view(N, T, -1)
+        x = self.dropout(x)
 
         x, _ = self.lstm(x)
 
-        x = self.dropout(x)  # Apply dropout
-
-        # Get the output of the last time step
+        #output of the last time step
         x = x[:, -1, :]
 
         x = self.fc(x)
@@ -110,7 +105,7 @@ class Conv3D_x3_LSTM(torch.nn.Module):
         self.to(device)
         print("INFO: model initialized with name:{}".format(self.modelname))
 
-        # CNN layers
+
         self.cnn = nn.Sequential(
             nn.Conv3d(input_dim, 32, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
@@ -132,19 +127,15 @@ class Conv3D_x3_LSTM(torch.nn.Module):
 
     def forward(self, x):
         N, T, D, H, W = x.shape
-        # Reshape input for CNN
         x = x.view(N, D, T, H, W)
 
-        # Apply CNN layers
         x = self.cnn(x)
 
-        # Reshape CNN output for LSTM
         x = x.view(N, T, -1)
         # print(x.shape)
 
         x, _ = self.lstm(x)
 
-        # Get the output of the last time step
         x = x[:, -1, :]
 
         x = self.fc(x)
