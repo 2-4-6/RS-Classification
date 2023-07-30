@@ -24,7 +24,7 @@ class S2Reader(Dataset):
     """
     THIS CLASS INITIALIZES THE DATA READER FOR SENTINEL-2 DATA
     """
-    def __init__(self, input_dir, label_dir, label_ids=None, transform=None, min_area_to_ignore = 1000, selected_time_points=None, include_cloud=False):
+    def __init__(self, input_dir, label_dir, label_ids=None, transform=None, min_area_to_ignore = 1000, selected_time_points=None, include_cloud=False, oversample = False):
         '''
         THIS FUNCTION INITIALIZES DATA READER.
         :param input_dir: directory of input images in zip format
