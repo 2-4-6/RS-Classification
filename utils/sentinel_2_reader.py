@@ -94,7 +94,7 @@ class S2Reader(Dataset):
         # image_stack = np.concatenate([image_stack, ndvi], axis=1)
         
         #Use selected bands NDVI - 12
-        image_stack = image_stack[:, [1, 2, 3, 4, 5, 6, 7, 8, 10, 11], :, :]
+        image_stack = image_stack[:, [1, 2, 3, 4, 11], :, :]
 
         if self.include_cloud:
             return image_stack, label, mask, feature.fid, cloud_stack

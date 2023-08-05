@@ -58,9 +58,13 @@ class Conv3D_x1_LSTM(torch.nn.Module):
 
         # CNN layers
         self.cnn = nn.Sequential(
-            nn.Conv3d(input_dim, 20, kernel_size=3, padding=1),
+            nn.Conv3d(input_dim, 32, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
-            nn.Dropout(dropout_rate),
+            # nn.Dropout(dropout_rate),
+            nn.MaxPool3d(kernel_size=2, stride=2),
+            nn.Conv3d(input_dim, 32, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            # nn.Dropout(dropout_rate),
             nn.MaxPool3d(kernel_size=2, stride=2)
         )
 
