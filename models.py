@@ -62,13 +62,15 @@ class Conv3D_x1_LSTM(torch.nn.Module):
             nn.ReLU(inplace=True),
             # nn.Dropout(dropout_rate),
             nn.MaxPool3d(kernel_size=2, stride=2),
-            nn.Conv3d(input_dim, 32, kernel_size=3, padding=1),
+            nn.Conv3d(32, 64, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
             # nn.Dropout(dropout_rate),
             nn.MaxPool3d(kernel_size=2, stride=2)
         )
 
         self.dropout = nn.Dropout(dropout_rate)
+
+        self.lstm = nn.LSTM(1024, 18, batch_first=True)
 
         self.fc = nn.Linear(18, num_classes)
 
@@ -83,14 +85,13 @@ class Conv3D_x1_LSTM(torch.nn.Module):
 
         # Reshape CNN output for LSTM
         x = x.view(N, T, -1)
-        x = self.dropout(x)
+        # print(x.shape)
 
-        self.lstm = nn.LSTM(x.shape[2], 18, batch_first=True).to(x.device)
         x, _ = self.lstm(x)
-
+        
         #output of the last time step
         x = x[:, -1, :]
-
+        # print(x.shape)
         x = self.fc(x)
 
         return x
