@@ -22,20 +22,29 @@ class Conv3D_LSTM(torch.nn.Module):
             nn.Conv3d(input_dim, 32, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
             nn.BatchNorm3d(32),
-            nn.MaxPool3d(kernel_size=2, stride=2),
             nn.Conv3d(32, 32, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
             nn.BatchNorm3d(32),
             nn.MaxPool3d(kernel_size=2, stride=2),
-            nn.Conv3d(32, 32, kernel_size=3, padding=1),
+            nn.Conv3d(32, 64, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
-            nn.BatchNorm3d(32),
+            nn.BatchNorm3d(64),
+            nn.Conv3d(64, 64, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm3d(64),
+            nn.MaxPool3d(kernel_size=2, stride=2),
+            nn.Conv3d(64, 64, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm3d(64),
+            nn.Conv3d(64, 64, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm3d(64),
             nn.MaxPool3d(kernel_size=2, stride=2),
         )
 
         self.dropout = nn.Dropout(dropout_rate)
 
-        self.lstm = nn.LSTM(64, 100,num_layers=2, batch_first=True)
+        self.lstm = nn.LSTM(128, 100,num_layers=2, batch_first=True)
 
         self.fc = nn.Linear(100, num_classes)
 
