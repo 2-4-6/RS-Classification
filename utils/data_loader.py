@@ -24,7 +24,7 @@ class DataLoader():
 
         if train_val_reader is not None:
             indices = list(range(len(train_val_reader)))
-            np.random.RandomState(0).shuffle(indices)
+            np.random.RandomState(42).shuffle(indices)
             split = int(np.floor(validation_split * len(train_val_reader)))
             train_indices, val_indices = indices[split:], indices[:split]
             # Splitting the data into training and validation partitions
