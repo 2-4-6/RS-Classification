@@ -150,3 +150,9 @@ def crop_or_pad_to_size(image_stack,  mask, image_size):
         image_stack = np.pad(image_stack, ((0, 0), (0, 0), (0, 0), padding))
         mask = np.pad(mask, ((0, 0), padding))
     return image_stack, mask
+
+    def add_noise(image, mean=0, std=0.1):
+        noise = np.random.normal(mean, std, image.shape)
+        noisy_image = image + noise
+        return np.clip(noisy_image, 0, 1)
+
