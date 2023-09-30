@@ -47,7 +47,7 @@ class Conv3D_LSTM(torch.nn.Module):
 
         self.dropout = nn.Dropout(dropout_rate)
 
-        self.lstm = nn.LSTM(256, 100,num_layers=2, batch_first=True)
+        self.lstm = nn.LSTM(2048, 100,num_layers=2, batch_first=True)
 
         self.fc = nn.Linear(100, num_classes)
 
@@ -57,15 +57,17 @@ class Conv3D_LSTM(torch.nn.Module):
         N, T, D, H, W = x.shape
         # input for CNN
         x = x.view(N, D, T, H, W)
-
+        # print(x.shape)
         x = self.cnn(x)
         # print(x.shape)
         # shape CNN output for LSTM
-        x = x.view(N, T, -1)
+        N, C, T_new, H, W = x.shape
         # print(x.shape)
-
+        # Reshape for LSTM input
+        x = x.view(N, T_new, -1)
+        # print(x.shape)
         x, _ = self.lstm(x)
-        
+        # print(x.shape)
         #output of the last time step
         x = x[:, -1, :]
         # print(x.shape)

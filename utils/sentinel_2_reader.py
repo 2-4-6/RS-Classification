@@ -77,12 +77,16 @@ class S2Reader(Dataset):
         if self.data_transform is not None:
             image_stack, mask = self.data_transform(image_stack, mask)
 
-        if self.selected_time_points is not None:
-            image_stack = image_stack[self.selected_time_points]
+        # if self.selected_time_points is not None:
+        #     image_stack = image_stack[self.selected_time_points]
 
-            while image_stack.shape[0] < 72:
-                last_image = image_stack[-1]
-                image_stack = np.concatenate([image_stack, last_image[np.newaxis, :, :, :]], axis=0)
+        #     while image_stack.shape[0] < 72:
+        #         last_image = image_stack[-1]
+        #         image_stack = np.concatenate([image_stack, last_image[np.newaxis, :, :, :]], axis=0)
+
+        if self.selected_time_points is not None:
+            image_stack = image_stack[:self.selected_time_points]
+
 
         if self.crop_ids is not None:
             label = self.crop_ids.index(feature.crop_id)
